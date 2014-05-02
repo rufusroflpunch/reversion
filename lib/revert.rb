@@ -2,7 +2,7 @@ require 'diff-lcs'
 require 'fileutils'
 
 
-class Revision
+class Revert
   def initialize
     
   end
