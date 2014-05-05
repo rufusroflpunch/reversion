@@ -1,2 +1,3 @@
 require 'minitest/autorun'
-require 'revision'
+require 'revert'
+require 'fileutils'
