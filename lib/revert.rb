@@ -3,6 +3,8 @@ require 'fileutils'
 
 
 class Revert
+  attr_reader :tracked_files
+
   def initialize(repo_dir)
     @repo_dir = repo_dir
 
@@ -11,6 +13,7 @@ class Revert
       load_repo
     else
       # Load sane defaults
+      @tracked_files = []
     end
   end
 
@@ -34,7 +37,7 @@ class Revert
   end
 
   def track_file(fname)
-    
+    @tracked_files << fname    
   end
 
   def is_tracked(fname)
