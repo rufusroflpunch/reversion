@@ -3,10 +3,11 @@ require 'fileutils'
 
 
 class Revert
-  attr_reader :tracked_files
+  attr_reader :tracked_files, :manifest
 
   def initialize(repo_dir)
     @repo_dir = repo_dir
+    @manifest = File.join @repo_dir, 'manifest'
 
     if File.directory?(@repo_dir)
       # If repo already exists, load it
@@ -20,16 +21,19 @@ class Revert
   def init_repo
     # Actually create the source code respository
     FileUtils.mkdir_p @repo_dir
-    FileUtils.touch File.join(@repo_dir, 'manifest')
+    FileUtils.touch @manifest
   end
 
   def load_repo
     # Load an already created repository
-    instance_eval File.read(File.join @repo_dir, 'manifest')
+    instance_eval File.read(@manifest)
   end
 
   def commit
-
+    # Write the new file list out to the manifest
+    File.open @manifest, 'w+' do |f|
+      f.puts "@tracked_files = #{ @tracked_files.inspect }"
+    end
   end
 
   def checkout(commit_id)
@@ -40,7 +44,7 @@ class Revert
     @tracked_files << fname    
   end
 
-  def is_tracked(fname)
-
+  def tracked?(fname)
+    @tracked_files.index(fname) != nil ? true : false
   end
 end

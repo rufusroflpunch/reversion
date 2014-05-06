@@ -37,4 +37,17 @@ describe Revert do
     @repo.tracked_files.index('file2').wont_be_nil
     @repo.tracked_files.index('file1').wont_be_nil
   end
+
+  it "should properly write out the manifest when committing" do
+    @repo.commit
+    manifest = File.read @repo.manifest
+    manifest.must_match(/@tracked_files/)
+    manifest.must_match(/file1/)
+    manifest.must_match(/file2/)
+  end
+
+  it "should correctly track files" do
+    @repo.tracked?('file1').must_equal true    
+    @repo.tracked?('file3').must_equal false
+  end
 end
