@@ -50,4 +50,18 @@ describe Revert do
     @repo.tracked?('file1').must_equal true    
     @repo.tracked?('file3').must_equal false
   end
+
+  it "should track commits correctly" do
+    @repo.commit
+    File.exists?('.rev/1').must_equal true
+  end
+
+  it "should be able to revert to a previous commit" do
+    @repo.commit
+    File.open 'file1', 'w+' do |f|
+      f.puts "I'm changing it up!"
+    end
+    @repo.checkout 1
+    File.read('file1').must_match(/1234/)
+  end
 end
