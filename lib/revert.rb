@@ -16,6 +16,8 @@ class Revert
       @tracked_files = []
       @last_commit = 0
       @current_files = {}
+      @commit_times = {} # Keeps track of the last file commit times
+      @staged_files = []
     end
   end
 
@@ -33,22 +35,25 @@ class Revert
   def write_manifest
     # Create the manifest
     File.open @manifest, 'w+' do |f|
-      f.puts "@tracked_files = #{ @tracked_files.inspect }"
+      f.puts "@tracked_files = #{ @tracked_files.uniq.inspect }"
       f.puts "@last_commit = #{ @last_commit }"
+      f.puts "@commit_times = #{ @commit_times }"
+      f.puts "@staged_files = #{ @staged_files.uniq }"
     end
   end
 
   def commit
     @last_commit += 1 # Keep track of current commit number
 
+    @staged_files.each do |s|
+      @commit_times[s] = File.mtime s
+    end
+
     # Write the actual commited files to the repo
     File.open File.join(@repo_dir, @last_commit.to_s), 'w+' do |f|
-      f.print '@current_files = {'
-      @tracked_files.each do |t|
-        f.print "#{ t.inspect } => #{ File.read(t).inspect }"
-        f.print ',' if t != @tracked_files.last
-      end
-      f.print '}'
+      commit_files = {}
+      @staged_files.each { |s| commit_files[s] = File.read(s) }
+      f.puts "@current_files = #{ commit_files.inspect }"
     end
 
     write_manifest
@@ -72,7 +77,21 @@ class Revert
     @tracked_files.index(fname) != nil
   end
 
-  def modified_files
+  def stage_file(fname)
+    @staged_files << fname
+    write_manifest
+  end
 
+  def staged?(fname)
+    @staged_files.index(fname) != nil
+  end
+
+  def add_file(fname)
+    stage_file fname
+    track_file fname
+  end
+
+  def modified_files
+    @tracked_files.select { |f| File.mtime(f) > @commit_times[f] }
   end
 end

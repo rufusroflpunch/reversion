@@ -11,8 +11,8 @@ describe Revert do
     # Set up the testing repo
     @repo = Revert.new('.rev/')
     @repo.init_repo
-    @repo.track_file 'file1'
-    @repo.track_file 'file2'
+    @repo.add_file 'file1'
+    @repo.add_file 'file2'
   end
 
   after do
@@ -51,6 +51,11 @@ describe Revert do
     @repo.tracked?('file3').must_equal false
   end
 
+  it "correctly tracks and stages files when you add them" do
+    @repo.staged?('file1').must_equal true
+    @repo.staged?('file3').must_equal false
+  end
+
   it "should track commits correctly" do
     @repo.commit
     File.exists?('.rev/1').must_equal true
@@ -63,5 +68,12 @@ describe Revert do
     end
     @repo.checkout 1
     File.read('file1').must_match(/1234/)
+  end
+
+  it "correctly lists modified files" do
+    @repo.commit
+    sleep 1 # Sleep at least one second so that the file mod time changes
+    File.open('file1', 'w+') { |f| f.print "Modifed the file" }
+    @repo.modified_files.must_equal ['file1']
   end
 end
