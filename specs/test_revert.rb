@@ -57,8 +57,9 @@ describe Reversion do
   end
 
   it "should track commits correctly" do
-    @repo.commit
+    commit_id = @repo.commit
     File.exists?('.rev/1').must_equal true
+    commit_id.must_equal 1
   end
 
   it "should be able to revert to a previous commit" do

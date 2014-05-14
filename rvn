@@ -7,7 +7,7 @@ require_relative 'lib/reversion'
   
   Commands:
     init:       Create a new repository.
-    add:      Adds a file to the repo.
+    add:        Adds a file to the repo.
     checkout:   Switch to a previous commit.
     all:        List all currently tracked files.
     modified:   List tracked files that have been modified

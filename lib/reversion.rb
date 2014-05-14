@@ -59,6 +59,8 @@ class Reversion
     end
 
     write_manifest
+
+    return @last_commit # Return the commit number
   end
 
   def checkout(commit_id)
@@ -94,7 +96,7 @@ class Reversion
   end
 
   def modified_files
-    @tracked_files.select { |f| File.mtime(f) > @commit_times[f] }
+    @tracked_files.select { |f| @commit_times[f] && File.mtime(f) > @commit_times[f] }
   end
 
   def commit?(commit_id)
