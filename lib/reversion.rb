@@ -25,6 +25,8 @@ class Reversion
     # Actually create the source code respository
     FileUtils.mkdir_p @repo_dir
     FileUtils.touch @manifest
+
+    write_manifest
   end
 
   def load_repo
