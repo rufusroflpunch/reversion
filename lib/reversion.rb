@@ -1,7 +1,7 @@
 require 'fileutils'
 
 
-class Revert
+class Reversion
   attr_reader :tracked_files, :manifest, :last_commit
 
   def initialize(repo_dir)
