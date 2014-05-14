@@ -89,4 +89,12 @@ describe Reversion do
     @repo.tracked?('file1').must_equal false
     @repo.staged?('file1').must_equal false
   end
+
+  it "should return a valid commit list" do
+    @repo.commit
+    @repo.commit
+    @repo.commit_list.keys.length.must_equal 2
+    @repo.commit_list.keys[0].must_equal ".rev/2"
+    @repo.commit_list.keys[1].must_equal ".rev/1"
+  end
 end

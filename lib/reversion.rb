@@ -112,4 +112,14 @@ class Reversion
   def commit?(commit_id)
     File.exists? File.join(@repo_dir, commit_id.to_s)
   end
+
+  def commit_list
+    file_list = Dir.glob File.join(@repo_dir, "[1-9]*")
+    commit_list = {}
+    file_list.each do |f|
+      instance_eval File.read(f)
+      commit_list[f] = @current_files.keys
+    end
+    return commit_list
+  end
 end
