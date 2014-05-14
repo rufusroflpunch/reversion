@@ -54,6 +54,8 @@ when "all"
   @repo.tracked_files.each { |f| puts " #{ f }"}
 when "modified"
   # List all files modified since last commit
+  puts 'Tracked files that have been modified:'
+  @repo.modified_files.each { |f| puts "  #{ f }"}
 when "help"
   puts @usage
   exit
