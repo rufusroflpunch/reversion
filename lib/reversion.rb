@@ -115,11 +115,13 @@ class Reversion
   end
 
   def commit_list
-    file_list = Dir.glob File.join(@repo_dir, "[1-9]*")
+    file_list = Dir.glob(File.join(@repo_dir, "[1-9]*")).sort.reverse
     commit_list = {}
     file_list.each do |f|
       instance_eval File.read(f)
       commit_list[f] = @current_files.keys
+      commit_list[f].insert(0, @current_message) # The commit message is the first
+                                                 # element of the array.
     end
     return commit_list
   end

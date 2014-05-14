@@ -13,9 +13,10 @@ require_relative 'lib/reversion'
     modified:   List tracked files that have been modified
                 since their last commit.
     rm:         Remove files from being tracked.
-    help:       Display this text.
+    log:        Display the commit log for this repo.
     commit:     Commit the current changes to the repo.
-                [args] is the commit message (in quotes).\n"
+                [args] is the commit message (in quotes).
+    help:       Display this message.\n"
 
 @command = ARGV.shift
 @repo = Reversion.new('.rev/')
@@ -51,7 +52,7 @@ when "checkout"
   end
 when "commit"
   # Commit the currently tracked changes
-  puts "Commiting changes to reposository. Commit ID #{ @repo.commit }"
+  puts "Commiting changes to reposository. Commit ID #{ @repo.commit ARGV[0] }"
 when "all"
   # List the currently tracked files
   if @repo.tracked_files.empty?
@@ -74,6 +75,16 @@ when "rm"
   ARGV.each do |f|
     puts "No longer tracking #{ f }"
     @repo.rm_file f
+  end
+when "log"
+  # Diplay the commit log for this repo.
+  commit_list = @repo.commit_list
+  commit_list.each do |k,v|
+    puts "--- Commit ID: #{ File.basename(k) } ---"
+    puts "Time: #{ File.mtime k }"
+    puts "Message: #{ v.shift }"
+    puts "Affected files: #{ v.join ', ' }"
+    puts "\n"
   end
 when "help"
   puts @usage
