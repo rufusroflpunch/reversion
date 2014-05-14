@@ -83,4 +83,10 @@ describe Reversion do
     @repo.commit?(1).must_equal true
     @repo.commit?(1000).must_equal false
   end
+
+  it "can remove tracked filed" do
+    @repo.rm_file 'file1'
+    @repo.tracked?('file1').must_equal false
+    @repo.staged?('file1').must_equal false
+  end
 end

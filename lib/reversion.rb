@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'date'
 
 
 class Reversion
@@ -39,7 +40,7 @@ class Reversion
     File.open @manifest, 'w+' do |f|
       f.puts "@tracked_files = #{ @tracked_files.uniq.inspect }"
       f.puts "@last_commit = #{ @last_commit }"
-      f.puts "@commit_times = #{ @commit_times }"
+      f.puts "@commit_times = #{ @commit_times.inspect }"
       f.puts "@staged_files = #{ @staged_files.uniq }"
     end
   end
@@ -48,7 +49,7 @@ class Reversion
     @last_commit += 1 # Keep track of current commit number
 
     @staged_files.each do |s|
-      @commit_times[s] = File.mtime s
+      @commit_times[s] = File.mtime(s).inspect
     end
 
     # Write the actual commited files to the repo
@@ -95,8 +96,14 @@ class Reversion
     track_file fname
   end
 
+  def rm_file(fname)
+    @tracked_files.delete fname
+    @staged_files.delete fname
+  end
+
   def modified_files
-    @tracked_files.select { |f| @commit_times[f] && File.mtime(f) > @commit_times[f] }
+    @tracked_files.select { |f| @commit_times[f] && 
+          File.mtime(f).to_s > @commit_times[f] }
   end
 
   def commit?(commit_id)
