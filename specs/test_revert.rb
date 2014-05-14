@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-describe Revert do
+describe Reversion do
   before do
     # Create the file structure for the test
     FileUtils.mkdir_p 'specs/test_files'
@@ -9,7 +9,7 @@ describe Revert do
     File.open('file2', 'w+') { |f| f.puts "test file 2\nasdf" }
 
     # Set up the testing repo
-    @repo = Revert.new('.rev/')
+    @repo = Reversion.new('.rev/')
     @repo.init_repo
     @repo.add_file 'file1'
     @repo.add_file 'file2'
@@ -21,7 +21,7 @@ describe Revert do
   end
 
   it "should be an instance of Revert" do
-    @repo.must_be_instance_of Revert
+    @repo.must_be_instance_of Reversion
   end
 
   it "should create the proper directory" do
@@ -75,5 +75,11 @@ describe Revert do
     sleep 1 # Sleep at least one second so that the file mod time changes
     File.open('file1', 'w+') { |f| f.print "Modifed the file" }
     @repo.modified_files.must_equal ['file1']
+  end
+
+  it "correctly reports whether a commit is valid" do
+    @repo.commit
+    @repo.commit?(1).must_equal true
+    @repo.commit?(1000).must_equal false
   end
 end

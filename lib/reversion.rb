@@ -94,4 +94,8 @@ class Reversion
   def modified_files
     @tracked_files.select { |f| File.mtime(f) > @commit_times[f] }
   end
+
+  def commit?(commit_id)
+    File.exists? File.join(@repo_dir, commit_id.to_s)
+  end
 end
