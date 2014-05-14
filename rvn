@@ -48,6 +48,7 @@ when "checkout"
   end
 when "commit"
   # Commit the currently tracked changes
+  puts "Commiting changes to reposository. Commit ID #{ @repo.commit }"
 when "all"
   # List the currently tracked files
   if @repo.tracked_files.empty?
