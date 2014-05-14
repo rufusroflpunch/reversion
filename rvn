@@ -50,11 +50,20 @@ when "commit"
   # Commit the currently tracked changes
 when "all"
   # List the currently tracked files
-  puts "Currently tracking:"
+  if @repo.tracked_files.empty?
+    puts "No files tracked."
+  else
+    puts "Currently tracking:"
+  end
   @repo.tracked_files.each { |f| puts " #{ f }"}
 when "modified"
   # List all files modified since last commit
-  puts 'Tracked files that have been modified:'
+  mod_files = @repo.modified_files
+  if mod_files.empty?
+    puts "No modified files."
+  else
+    puts 'Tracked files that have been modified:'
+  end
   @repo.modified_files.each { |f| puts "  #{ f }"}
 when "help"
   puts @usage
