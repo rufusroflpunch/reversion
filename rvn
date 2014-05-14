@@ -50,6 +50,8 @@ when "commit"
   end
 when "all"
   # List the currently tracked files
+  puts "Currently tracking:"
+  @repo.tracked_files.each { |f| puts " #{ f }"}
 when "modified"
   # List all files modified since last commit
 when "help"
