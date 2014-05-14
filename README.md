@@ -32,9 +32,20 @@ Usage: rvn <command> [args]
 
 Just clone the repo and add it to your path. Presto change-o!
 
-## Misc
+## FAQs
 
 ### Q: Why should you use this instead git, subversion, etc.?
 A: You probably should not. It does not have remote repos, branches
 or any advanced features. However, if you would like to learn, this might be a good
 codebase to have a look through. If you have any questions, just shoot me a line.
+
+### Q: Why did you do this?
+A: The simple answer is to learn. Specifically, I wanted to get my really good and
+wet with test-driven development. I created a full sweet of tests along with (and before)
+I wrote code. I also wanted to make a genuinely useful application. Even though
+it's not feature-rich compared to other source code revision systems, it's still
+got enough features that someone might find it useful.
+
+### Q: What about dependencies?
+A: Nothing really. It's dependency free, other than Ruby. It's coded in Ruby 2.1.1, but
+it will likely work in earlier versions.
