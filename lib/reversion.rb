@@ -59,6 +59,7 @@ class Reversion
       f.puts "@current_files = #{ commit_files.inspect }"
     end
 
+    @staged_files = [] # Clear the stage after committing
     write_manifest
 
     return @last_commit # Return the commit number
