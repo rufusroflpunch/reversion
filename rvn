@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+
+require_relative 'lib/reversion'
+
+@usage =
+  "Usage: rvn <command> [args]
+  
+  Commands:
+    init:       Create a new repository.
+    track:      Adds a file to the repo.
+    checkout:   Switch to a previous commit.
+    all:        List all currently tracked files.
+    modified:   List tracked files that have been modified
+                since their last commit.
+    help:       Display this text.\n"
+
+@command = ARGV.shift
+@repo = Reversion.new('.rev/')
+
+case @command
+when "init"
+  # Create new repo
+  if File.directory? '.rev/'
+    puts 'Repo or directory .rev already exists.'
+    exit
+  else
+    puts 'Initalizing repo in .rev/'
+    @repo.init_repo
+  end
+when "track"
+  # Track new file(s)
+when "checkout"
+  # Move to a previous commit
+when "commit"
+  # Commit the currently tracked changes
+when "all"
+  # List the currently tracked files
+when "modified"
+  # List all files modified since last commit
+when "help"
+  puts @usage
+  exit
+else
+  puts @usage
+  exit
+end
