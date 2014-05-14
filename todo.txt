@@ -1,2 +1,0 @@
-Add commit message.
-Ability to list commits.
