@@ -97,4 +97,10 @@ describe Reversion do
     @repo.commit_list.keys[0].must_equal ".rev/2"
     @repo.commit_list.keys[1].must_equal ".rev/1"
   end
+
+  it "should track the commit message" do
+    @repo.commit 'test commit'
+    instance_eval File.read('.rev/1')
+    @current_message.must_equal 'test commit'
+  end
 end

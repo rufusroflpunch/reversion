@@ -45,7 +45,7 @@ class Reversion
     end
   end
 
-  def commit
+  def commit(message = '')
     @last_commit += 1 # Keep track of current commit number
 
     @staged_files.each do |s|
@@ -57,6 +57,7 @@ class Reversion
       commit_files = {}
       @staged_files.each { |s| commit_files[s] = File.read(s) }
       f.puts "@current_files = #{ commit_files.inspect }"
+      f.puts "@current_message = #{ message.inspect }"
     end
 
     @staged_files = [] # Clear the stage after committing

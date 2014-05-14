@@ -13,7 +13,9 @@ require_relative 'lib/reversion'
     modified:   List tracked files that have been modified
                 since their last commit.
     rm:         Remove files from being tracked.
-    help:       Display this text.\n"
+    help:       Display this text.
+    commit:     Commit the current changes to the repo.
+                [args] is the commit message (in quotes).\n"
 
 @command = ARGV.shift
 @repo = Reversion.new('.rev/')
