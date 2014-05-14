@@ -99,6 +99,8 @@ class Reversion
   def rm_file(fname)
     @tracked_files.delete fname
     @staged_files.delete fname
+
+    write_manifest
   end
 
   def modified_files
