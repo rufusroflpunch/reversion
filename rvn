@@ -39,8 +39,6 @@ when "add"
   end
 when "checkout"
   # Move to a previous commit
-when "commit"
-  # Commit the currently tracked changes
   commit_id = ARGV[0]
   if @repo.commit? commit_id
     puts "Checking out commit #{ commit_id }."
@@ -48,6 +46,8 @@ when "commit"
   else
     puts "Can't checkout invalid commit."
   end
+when "commit"
+  # Commit the currently tracked changes
 when "all"
   # List the currently tracked files
   puts "Currently tracking:"
