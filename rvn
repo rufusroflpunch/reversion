@@ -1,9 +1,12 @@
 #!/usr/bin/env ruby
 
+$VERSION = '0.1.0'
+
 require_relative 'lib/reversion'
 
 @usage =
-  "Usage: rvn <command> [args]
+  "Reversion 0.1.0
+Usage: rvn <command> [args]
   
   Commands:
     init:       Create a new repository.

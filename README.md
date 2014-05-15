@@ -49,3 +49,9 @@ got enough features that someone might find it useful.
 ### Q: What about dependencies?
 A: Nothing really. It's dependency free, other than Ruby. It's coded in Ruby 2.1.1, but
 it will likely work in earlier versions.
+
+
+## Changelog
+
+**0.1.0**
+Initial release.
