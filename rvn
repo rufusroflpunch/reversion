@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
 
-$VERSION = '0.1.0'
+$VERSION = '0.1.1'
 
 require_relative 'lib/reversion'
 
 @usage =
-  "Reversion 0.1.0
+  "Reversion #{$VERSION}
 Usage: rvn <command> [args]
   
   Commands:
@@ -49,7 +49,7 @@ when "checkout"
   commit_id = ARGV[0]
   if @repo.commit? commit_id
     puts "Checking out commit #{ commit_id }."
-    @repo.checkout commit_id
+    @error = @repo.checkout commit_id
   else
     puts "Can't checkout invalid commit."
   end
@@ -96,3 +96,6 @@ else
   puts @usage
   exit
 end
+
+# Output any error messages.
+puts "ERROR: #{ @error }" if @error

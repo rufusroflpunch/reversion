@@ -45,6 +45,16 @@ describe Reversion do
     manifest.must_match(/file1/)
     manifest.must_match(/file2/)
   end
+  
+  it "should create an md5 hash when committing" do
+    @repo.commit
+    File.exists?('.rev/1.md5').must_equal true
+  end
+
+  it "will be a valid md5 hash" do
+    @repo.commit
+    Digest::MD5.hexdigest(File.read('.rev/1')).must_equal File.read('.rev/1.md5')
+  end
 
   it "should correctly track files" do
     @repo.tracked?('file1').must_equal true    
@@ -69,6 +79,19 @@ describe Reversion do
     end
     @repo.checkout 1
     File.read('file1').must_match(/1234/)
+  end
+
+  it "correctly checks for file corruption" do
+    @repo.commit
+    # Corrupt the commit
+    File.open '.rev/1', 'w+' do |f|
+      f.puts 'the beeeees! my eyes!'
+    end
+    @repo.checkout(1).wont_equal nil
+
+    @repo.add_file('file2')
+    @repo.commit
+    @repo.checkout(2).must_equal nil
   end
 
   it "correctly lists modified files" do

@@ -53,5 +53,8 @@ it will likely work in earlier versions.
 
 ## Changelog
 
+### 0.1.1 - 5/22/2014
+Added MD5 hashing support to guard against commit corruption.
+
 ### 0.1.0 - 5/15/2014
 Initial release.

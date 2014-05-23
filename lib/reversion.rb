@@ -1,5 +1,6 @@
 require 'fileutils'
 require 'date'
+require 'digest/md5'
 
 
 class Reversion
@@ -52,12 +53,20 @@ class Reversion
       @commit_times[s] = File.mtime(s).inspect
     end
 
+    # Build the commit string and md5 hash.
+    commit_files = {}
+    @staged_files.each { |s| commit_files[s] = File.read(s) }
+    commit_str = "@current_files = #{ commit_files.inspect }\n"
+    commit_str += "@current_message = #{ message.inspect }\n"
+    commit_hash = Digest::MD5.hexdigest(commit_str)
+    
     # Write the actual commited files to the repo
     File.open File.join(@repo_dir, @last_commit.to_s), 'w+' do |f|
-      commit_files = {}
-      @staged_files.each { |s| commit_files[s] = File.read(s) }
-      f.puts "@current_files = #{ commit_files.inspect }"
-      f.puts "@current_message = #{ message.inspect }"
+      f.print commit_str
+    end
+
+    File.open File.join(@repo_dir, "#{ @last_commit.to_s }.md5"), 'w+' do |f|
+      f.print commit_hash
     end
 
     @staged_files = [] # Clear the stage after committing
@@ -67,12 +76,21 @@ class Reversion
   end
 
   def checkout(commit_id)
-    instance_eval File.read(File.join @repo_dir, commit_id.to_s)
+    commit_file = File.read(File.join @repo_dir, commit_id.to_s)
+    commit_hash = File.read(File.join @repo_dir, "#{ commit_id }.md5")
+
+    # Check the file integrity.
+    if Digest::MD5.hexdigest(commit_file) != commit_hash
+      return "Commit #{ commit_id } is corrupted."
+    end
+
+    instance_eval commit_file
     @current_files.each do |k,v|
       File.open k, 'w+' do |f|
         f.puts v
       end
     end
+    nil   # No error. Yay!
   end
 
   def track_file(fname)
@@ -116,6 +134,7 @@ class Reversion
 
   def commit_list
     file_list = Dir.glob(File.join(@repo_dir, "[1-9]*")).sort.reverse
+    file_list.delete_if {|f| f =~ /md5/ } # Make sure no hashes are included.
     commit_list = {}
     file_list.each do |f|
       instance_eval File.read(f)
