@@ -28,11 +28,6 @@ describe Reversion do
     File.directory?('.rev').must_equal true
   end
 
-  it "should properly evaluage instance_eval for the manifest" do
-    File.open('.rev/manifest', 'w+') { |f| f.puts '@repo_dir' }
-    @repo.load_repo.must_equal '.rev/'
-  end
-
   it "is properly tracking files" do
     @repo.tracked_files.index('file2').wont_be_nil
     @repo.tracked_files.index('file1').wont_be_nil
@@ -125,5 +120,16 @@ describe Reversion do
     @repo.commit 'test commit'
     instance_eval File.read('.rev/1')
     @current_message.must_equal 'test commit'
+  end
+
+  it "creates an md5 has for the manifest" do
+    @repo.commit 'test commit'
+    File.exists?('.rev/manifest.md5').must_equal true
+  end
+
+  it "won't load a corrupt repo" do
+    @repo.commit 'test commit'
+    File.open(@repo.manifest, 'w+') { |f| f.puts "corruption!" }
+    @repo.load_repo.wont_equal nil
   end
 end

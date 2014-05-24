@@ -12,7 +12,11 @@ class Reversion
 
     if File.directory?(@repo_dir)
       # If repo already exists, load it
-      load_repo
+      load = load_repo
+      
+      if load != nil
+        raise load
+      end
     else
       # Load sane defaults
       @tracked_files = []
@@ -32,17 +36,35 @@ class Reversion
   end
 
   def load_repo
+    manifest = File.read @manifest
+    manifest_hash = File.read "#{ @manifest }.md5"
+
+    # Is the manifest intact?
+    if manifest_hash != Digest::MD5.hexdigest(manifest)
+      return "Manifest is corrupt. You may need to reinitialize the repo."
+    end
+
     # Load an already created repository
-    instance_eval File.read(@manifest)
+    instance_eval manifest
+
+    return nil    # No error!
   end
 
   def write_manifest
     # Create the manifest
+    manifest = "@tracked_files = #{ @tracked_files.uniq.inspect }\n"
+    manifest += "@last_commit = #{ @last_commit }\n"
+    manifest += "@commit_times = #{ @commit_times.inspect }\n"
+    manifest += "@staged_files = #{ @staged_files.uniq }\n"
+
+    # Write the manifest
     File.open @manifest, 'w+' do |f|
-      f.puts "@tracked_files = #{ @tracked_files.uniq.inspect }"
-      f.puts "@last_commit = #{ @last_commit }"
-      f.puts "@commit_times = #{ @commit_times.inspect }"
-      f.puts "@staged_files = #{ @staged_files.uniq }"
+      f.print manifest
+    end
+
+    # Write the hash
+    File.open "#{ @manifest }.md5", 'w+' do |f|
+      f.print Digest::MD5.hexdigest(manifest)
     end
   end
 
